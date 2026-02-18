@@ -212,7 +212,7 @@ export abstract class RendererBase {
      */
     constructor() {
         this.options = {
-            sheets: ["core", "dice", "looney", "piecepack", "chess", "streetcar", "nato", "decktet", "arimaa"],
+            sheets: ["core", "dice", "looney", "piecepack", "chess", "streetcar", "nato", "decktet", "arimaa", "experimental"],
             colourContext: {
                 background: "#fff",
                 fill: "#000",
