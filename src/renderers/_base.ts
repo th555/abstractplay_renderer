@@ -676,6 +676,12 @@ export abstract class RendererBase {
                     // const clone = got.clone();
                     // const clone = got;
 
+                    // load opacity and only apply it to player fills
+                    let opacity = 1;
+                    if (g.opacity !== undefined) {
+                        opacity = g.opacity;
+                    }
+
                     // Colourize (`player` first, then `colour` if defined)
                     // adapted for two colours
                     const colourVals = [g.colour, g.colour2];
@@ -702,15 +708,15 @@ export abstract class RendererBase {
                                     throw new Error("The list of colours provided is not long enough to support the number of players in this game.");
                                 }
                                 const fill = this.options.colours[player - 1];
-                                got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill(fill); });
-                                got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke(fill); isStroke = true; });
+                                got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill({color: fill, opacity}); });
+                                got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke({color: fill, opacity}); isStroke = true; });
                             }
                         } else if (colourVal !== undefined) {
                             const normColour = this.resolveColour(colourVal as string|number|Gradient, "#000");
                             // @ts-expect-error (poor SVGjs typing)
-                            got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill(normColour); });
+                            got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill({color: normColour, opacity}); });
                             // @ts-expect-error (poor SVGjs typing)
-                            got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke(normColour); isStroke = true; });
+                            got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke({color: normColour, opacity}); isStroke = true; });
                         }
                         // if colour is fully undefined, try to deduce the highest contrast colour
                         else {
@@ -736,20 +742,12 @@ export abstract class RendererBase {
                                 };
                                 const normColour = this.resolveColour(func, "#000");
                                 // @ts-expect-error (poor SVGjs typing)
-                                got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill(normColour); });
+                                got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill({color: normColour, opacity}); });
                                 // @ts-expect-error (poor SVGjs typing)
-                                got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke(normColour); isStroke = true; });
+                                got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke({color: normColour, opacity}); isStroke = true; });
                             }
                         }
                         haveStrokes.push(isStroke);
-                    }
-
-                    // Apply requested opacity
-                    if (g.opacity !== undefined) {
-                        got.fill({opacity: g.opacity});
-                        if (haveStrokes.reduce((prev, curr) => prev || curr, false)) {
-                            got.stroke({opacity: g.opacity});
-                        }
                     }
 
                     // nested.add(clone);
