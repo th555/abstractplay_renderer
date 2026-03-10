@@ -746,6 +746,11 @@ export abstract class RendererBase {
                                 // @ts-expect-error (poor SVGjs typing)
                                 got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke({color: normColour, opacity}); isStroke = true; });
                             }
+                            // for everything else, just apply opacity
+                            else {
+                                got.find(`[data-playerfill${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.fill({opacity}); });
+                                got.find(`[data-playerstroke${i > 0 ? i+1 : ""}=true]`).each(function(this: SVGElement) { this.stroke({opacity}); isStroke = true; });
+                            }
                         }
                         haveStrokes.push(isStroke);
                     }
